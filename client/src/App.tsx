@@ -29,7 +29,13 @@ function App() {
       <Row xs={1} ms={2} xl={3} className='g-4'>
         {notes.map(note => (
           <Col key={note._id}>
-            <Note note={note} className={styles.note} />
+            <Note
+              note={note}
+              className={styles.note}
+              onDeleteNoteClick={(deletedNote) => {
+                setNotes(notes.filter(note => note._id !== deletedNote._id));
+              }}
+            />
           </Col>
         ))}
       </Row>
