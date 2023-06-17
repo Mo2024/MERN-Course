@@ -5,11 +5,13 @@ import { Note as NoteModel } from './models/note';
 import Note from './components/Note';
 import { Container, Row, Col, Button } from "react-bootstrap";
 import * as NotesApi from './network/notes_api'
-import AddNoteDialog from './components/AddNoteDialog';
+import AddEditNoteDialog from './components/AddEditNoteDialog';
+import { FaPlus } from 'react-icons/fa'
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null)
   useEffect(() => {
     async function loadNotes() {
       try {
@@ -25,7 +27,12 @@ function App() {
 
   return (
     <Container>
-      <Button className={`mb-4 ${stylesUtils.blockCenter}`} onClick={() => setShowAddNoteDialog(true)}>Add new note</Button>
+      <Button
+        className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
+        onClick={() => setShowAddNoteDialog(true)}>
+        <FaPlus />
+        Add new note
+      </Button>
       <Row xs={1} ms={2} xl={3} className='g-4'>
         {notes.map(note => (
           <Col key={note._id}>
@@ -35,20 +42,32 @@ function App() {
               onDeleteNoteClick={(deletedNote) => {
                 setNotes(notes.filter(note => note._id !== deletedNote._id));
               }}
+              onNoteClick={setNoteToEdit}
             />
           </Col>
         ))}
       </Row>
       {
         showAddNoteDialog &&
-        <AddNoteDialog
+        <AddEditNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}
           onNoteSaved={(newNote) => {
             setShowAddNoteDialog(false);
             setNotes([...notes, newNote])
           }} />
       }
-    </Container>
+      {
+        noteToEdit &&
+        <AddEditNoteDialog
+          noteToEdit={noteToEdit}
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSaved={(updatedNote) => {
+            setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote))
+            setNoteToEdit(null)
+          }}
+        />
+      }
+    </Container >
   );
 }
 

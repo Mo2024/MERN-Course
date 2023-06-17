@@ -9,9 +9,10 @@ import * as NotesApi from '../network/notes_api'
 interface NoteProps {
     note: NoteModel,
     className?: string,
+    onNoteClick: (note: NoteModel) => void
     onDeleteNoteClick: (note: NoteModel) => void
 }
-const Note = ({ note, className, onDeleteNoteClick }: NoteProps) => {
+const Note = ({ onNoteClick, note, className, onDeleteNoteClick }: NoteProps) => {
     const { _id, title, text, createdAt, updatedAt } = note;
     let createdUpdatedText: string;
     if (updatedAt > createdAt) {
@@ -31,7 +32,10 @@ const Note = ({ note, className, onDeleteNoteClick }: NoteProps) => {
         }
     }
     return (
-        <Card className={`${styles.noteCard} ${className}`}>
+        <Card
+            className={`${styles.noteCard} ${className}`}
+            onClick={() => onNoteClick(note)}
+        >
             <Card.Body className={styles.cardBody}>
                 <Card.Title>
                     {title}
