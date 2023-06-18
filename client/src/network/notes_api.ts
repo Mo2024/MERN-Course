@@ -1,6 +1,6 @@
 import { Note as NoteModel } from '../models/note';
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
+export default async function fetchData(input: RequestInfo, init?: RequestInit) {
     const response = await fetch(input, init);
     if (response.ok) return response;
     const errorBody = await response.json();

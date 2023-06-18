@@ -1,9 +1,9 @@
-import { Modal, Form, Button } from "react-bootstrap";
-import { Note as NoteModel } from '../models/note';
+import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { Note as NoteModel } from '../models/note';
+import * as NotesApi from '../network/notes_api';
 import { NoteInput } from "../network/notes_api";
-import * as NotesApi from '../network/notes_api'
-
+import TextInputField from "./form/TextInputField";
 
 interface AddEditNoteDialogProps {
     noteToEdit?: NoteModel,
@@ -42,17 +42,23 @@ const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
             </Modal.Header>
             <Modal.Body>
                 <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control type="text" isInvalid={!!errors.title} placeholder="Title" {...register('title', { required: 'Required' })} />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.title?.message}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Text</Form.Label>
-                        <Form.Control as="textarea" rows={5} placeholder="Text" {...register('text')} />
-                    </Form.Group>
+                    <TextInputField
+                        name="title"
+                        label="Title"
+                        type="text"
+                        placeholder="Title"
+                        register={register}
+                        registerOptions={{ required: 'Required' }}
+                        error={errors.title}
+                    />
+                    <TextInputField
+                        name="text"
+                        label="Text"
+                        as="textarea"
+                        placeholder="Text"
+                        rows={5}
+                        register={register}
+                    />
                 </Form>
             </Modal.Body>
             <Modal.Footer>
