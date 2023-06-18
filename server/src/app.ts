@@ -1,12 +1,14 @@
+import MongoStore from "connect-mongo";
 import "dotenv/config";
-import express, { NextFunction, Response, Request } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import session from "express-session";
+import createHttpError, { isHttpError } from "http-errors";
+import morgan from 'morgan';
+import { requiresAuth } from './middleware/auth';
 import noteRoutes from './routes/notes';
 import userRoutes from './routes/users';
-import morgan from 'morgan';
-import createHttpError, { isHttpError } from "http-errors";
-import session from "express-session"
-import env from './util/validateEnv'
-import MongoStore from "connect-mongo";
+import env from './util/validateEnv';
+
 const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
@@ -24,7 +26,7 @@ app.use(session({
     })
 }))
 
-app.use('/api/notes', noteRoutes);
+app.use('/api/notes', requiresAuth, noteRoutes);
 app.use('/api/users', userRoutes);
 
 app.use((req, res, next) => {
